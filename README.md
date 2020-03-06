@@ -29,4 +29,4 @@ This repository is structured as follows:
 
 ### Instructions for setting up the AWS workflow
 
-Detailed instructions for setting up the workflow on AWS are provided in the [documentation](https://slimgroup.github.io/ServerlessImagingAWS/)
+Detailed instructions for setting up the workflow on AWS are provided in the [documentation](https://slimgroup.github.io/ServerlessImagingAWS/).
