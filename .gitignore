@@ -4,6 +4,5 @@
 numerical_examples/imaging_example_sgd/bp_tti.h5
 numerical_examples/imaging_example_sgd/lsrtm_sgd_30.dat
 *.tar.gz
-*.png
 __pycache__
 
