@@ -1,0 +1,11 @@
+{
+  "jobQueueName": "MultiNodeQueue_R5_MAX_24",
+  "state": "ENABLED",
+  "priority": 1000,
+  "computeEnvironmentOrder": [
+    {
+      "order": 1,
+      "computeEnvironment": "R5_ON_DEMAND_MAXCPU_24"
+    }
+  ]
+}

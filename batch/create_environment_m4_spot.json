@@ -1,0 +1,35 @@
+{
+  "computeEnvironmentName": "M4_SPOT_MAXCPU_8",
+  "type": "MANAGED",
+  "state": "ENABLED",
+  "computeResources": {
+    "type": "SPOT",
+    "spotIamFleetRole": "",
+    "minvCpus": 0,
+    "maxvCpus": 2048,
+    "desiredvCpus": 0,
+    "instanceTypes": [
+      "m4.4xlarge"
+    ],
+    "bidPercentage": 50,
+    "subnets": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "securityGroupIds": [
+      "",
+      ""
+    ],
+    "ec2KeyPair": "",
+    "imageId": "",
+    "instanceRole": "",
+    "tags": {
+      "Name": "Batch Instance - m4.4xlarge w/o HT"
+    }
+  },
+  "serviceRole": ""
+}

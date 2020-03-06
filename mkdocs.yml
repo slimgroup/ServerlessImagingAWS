@@ -1,0 +1,13 @@
+site_name: Event-driven seismic imaging in the cloud
+nav:
+    - Home: index.md
+    - Create IAM roles: roles.md
+    - Set up batch environment: batch.md
+    - Upload Lambda functions: lambda.md
+    - Create message queues: sqs.md
+    - Step Functions: step.md
+    - Create docker container: docker.md
+    - Performance tests: performance.md
+    - Troubleshooting: trouble.md
+    - About: about.md
+theme: readthedocs

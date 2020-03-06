@@ -1,0 +1,14 @@
+{
+  "SecurityGroupIds": ["sg-58967010", "sg-0019a9838b4564ae6"],
+  "EbsOptimized": true,
+  "IamInstanceProfile": {
+    "Name": "ec2-spot-profile"
+    },
+  "ImageId": "ami-04b9e92b5572fa0d1",
+  "InstanceType": "r5.metal",
+  "KeyName": "philipp_dell",
+  "Placement": {
+    "AvailabilityZone": "us-east-1d",
+    "GroupName": "MPIgroup"
+  }
+}

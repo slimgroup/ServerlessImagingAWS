@@ -1,0 +1,33 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": [
+                "batch:DescribeJobQueues",
+                "s3:ListBucketByTags",
+                "s3:ListBucketMultipartUploads",
+                "batch:CancelJob",
+                "batch:SubmitJob",
+                "s3:ListBucketVersions",
+                "batch:ListJobs",
+                "s3:ListBucket",
+                "logs:CreateLogGroup",
+                "logs:PutLogEvents",
+                "s3:ListMultipartUploadParts",
+                "batch:DeregisterJobDefinition",
+                "batch:TerminateJob",
+                "batch:CreateJobQueue",
+                "logs:CreateLogStream",
+                "batch:DescribeJobs",
+                "s3:ListAllMyBuckets",
+                "batch:RegisterJobDefinition",
+                "batch:DescribeJobDefinitions",
+                "batch:DeleteJobQueue",
+                "batch:UpdateJobQueue"
+            ],
+            "Resource": "*"
+        }
+    ]
+}

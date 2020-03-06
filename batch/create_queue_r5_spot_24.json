@@ -1,0 +1,11 @@
+{
+  "jobQueueName": "SpotQueue_R5_MAX_24",
+  "state": "ENABLED",
+  "priority": 1000,
+  "computeEnvironmentOrder": [
+    {
+      "order": 1,
+      "computeEnvironment": "R5_SPOT_MAXCPU_24"
+    }
+  ]
+}

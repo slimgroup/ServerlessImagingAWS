@@ -1,0 +1,71 @@
+{
+    "Comment": "Iterator State Machine Example",
+    "StartAt": "CreateQueues",
+    "States": {
+        "CreateQueues": {
+            "Comment": "Create SQS queues and lambda triggers for the gradient reduction",
+            "Type": "Task",
+            "Resource": "arn:aws:lambda:us-east-1:851065145468:function:CreateQueues",
+            "ResultPath": "$",
+            "Next": "Iterator"
+        },
+        "Iterator": {
+            "Type": "Task",
+            "Resource": "arn:aws:lambda:us-east-1:851065145468:function:Iterator",
+            "ResultPath": "$",
+            "Next": "IsCountReached"
+        },
+        "IsCountReached": {
+            "Type": "Choice",
+            "Choices": [
+                {
+                    "Variable": "$.iterator.continue",
+                    "BooleanEquals": true,
+                    "Next": "ComputeGradient"
+                }
+            ],
+            "Default": "CleanUp"
+        },
+        "ComputeGradient": {
+            "Comment": "Your application logic, to run a specific number of times",
+            "Type": "Task",
+            "Resource": "arn:aws:lambda:us-east-1:851065145468:function:ComputeGradients_MultiNode",
+            "ResultPath": "$",
+            "Next": "GetGradientStatus"
+        },
+        "GetGradientStatus": {
+            "Type": "Task",
+            "Resource": "arn:aws:lambda:us-east-1:851065145468:function:CheckS3forVariable_MultiNode",
+            "Next": "CheckGradientStatus",
+            "InputPath": "$",
+            "ResultPath": "$.gradient_status"
+        },
+        "CheckGradientStatus": {
+            "Type": "Choice",
+            "Choices": [
+                {
+                    "Variable": "$.gradient_status",
+                    "StringEquals": "SUCCEEDED",
+                    "Next": "Iterator"
+                }
+            ],
+            "Default": "WaitForUpdate"
+        },
+        "WaitForUpdate": {
+            "Type": "Wait",
+            "Seconds": 60,
+            "Next": "GetGradientStatus"
+        },
+        "CleanUp": {
+            "Comment": "Remove lambda triggers and SQS queues.",
+            "Type": "Task",
+            "Resource": "arn:aws:lambda:us-east-1:851065145468:function:CleanUp",
+            "ResultPath": "$",
+            "Next": "Done"
+        },
+        "Done": {
+            "Type": "Pass",
+            "End": true
+        }
+    }
+}

@@ -1,0 +1,11 @@
+{
+  "jobQueueName": "MultiNodeQueue_C5N_MAX_18",
+  "state": "ENABLED",
+  "priority": 1000,
+  "computeEnvironmentOrder": [
+    {
+      "order": 1,
+      "computeEnvironment": "C5N_ON_DEMAND_MAXCPU_18"
+    }
+  ]
+}

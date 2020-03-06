@@ -1,0 +1,11 @@
+{
+  "jobQueueName": "SpotQueue_M4",
+  "state": "ENABLED",
+  "priority": 1000,
+  "computeEnvironmentOrder": [
+    {
+      "order": 1,
+      "computeEnvironment": "M4_SPOT_MAXCPU_8"
+    }
+  ]
+}

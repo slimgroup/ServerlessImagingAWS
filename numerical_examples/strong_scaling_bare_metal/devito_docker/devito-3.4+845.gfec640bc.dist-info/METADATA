@@ -1,0 +1,43 @@
+Metadata-Version: 2.0
+Name: devito
+Version: 3.4+845.gfec640bc
+Summary: Finite Difference DSL for symbolic computation.
+Home-page: http://www.devitoproject.org
+Author: Imperial College London
+Author-email: opesci@imperial.ac.uk
+License: MIT
+Platform: UNKNOWN
+Provides-Extra: extras
+Requires-Dist: anytree (>=2.4.3)
+Requires-Dist: cached-property
+Requires-Dist: cgen
+Requires-Dist: click
+Requires-Dist: codecov
+Requires-Dist: codepy
+Requires-Dist: distributed (>=1.21.8)
+Requires-Dist: flake8 (>=2.1.0)
+Requires-Dist: frozendict
+Requires-Dist: jedi
+Requires-Dist: multidict
+Requires-Dist: nbval
+Requires-Dist: numpy (>=1.14)
+Requires-Dist: psutil (>=5.1.0)
+Requires-Dist: py-cpuinfo
+Requires-Dist: pyrevolve (==1.0.2)
+Requires-Dist: pytest-cov
+Requires-Dist: pytest-runner
+Requires-Dist: scikit-image
+Requires-Dist: scipy
+Requires-Dist: sympy (>=1.2)
+Provides-Extra: extras
+Requires-Dist: matplotlib; extra == 'extras'
+Requires-Dist: mpi4py; extra == 'extras'
+
+Devito is a new tool for performing
+optimised Finite Difference (FD) computation from high-level
+symbolic problem definitions. Devito performs automated code
+generation and Just-In-time (JIT) compilation based on symbolic
+equations defined in SymPy to create and execute highly
+optimised Finite Difference kernels on multiple computer
+platforms.
+
