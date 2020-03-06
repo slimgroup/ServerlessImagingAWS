@@ -26,5 +26,5 @@ Once installed, the CLI must be configured with the AWS user credentials. Run `a
 Next, clone the Github repository that contains all setup scripts and the numerical examples. Here, we add the repository to the home directory (`~/`):
 
 ```
-git clone https://github.com/philippwitte/cloud-imaging ~/.
+git clone https://github.com/slimgroup/ServerlessImagingAWS ~/.
 ```
