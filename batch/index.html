@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>Set up batch environment - Event-driven seismic imaging in the cloud</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Set up batch environment";
+    var mkdocs_page_input_path = "batch.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> Event-driven seismic imaging in the cloud</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="..">Home</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../roles/">Create IAM roles</a>
+	    </li>
+          
+            <li class="toctree-l1 current">
+		
+    <a class="current" href="./">Set up batch environment</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l2"><a href="#batch-environment">Batch environment</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l3" href="#elastic-file-system">Elastic file system</a></li>
+        
+            <li><a class="toctree-l3" href="#amis-without-hyper-threading">AMIs without hyper-threading</a></li>
+        
+            <li><a class="toctree-l3" href="#create-environments">Create environments</a></li>
+        
+            <li><a class="toctree-l3" href="#create-queues">Create queues</a></li>
+        
+            <li><a class="toctree-l3" href="#multi-node-environment-and-queues">Multi-node environment and queues</a></li>
+        
+            <li><a class="toctree-l3" href="#vpc-endpoints">VPC endpoints</a></li>
+        
+        </ul>
+    
+
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../lambda/">Upload Lambda functions</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../sqs/">Create message queues</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../step/">Step Functions</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../docker/">Create docker container</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../performance/">Performance tests</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../trouble/">Troubleshooting</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../about/">About</a>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">Event-driven seismic imaging in the cloud</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>Set up batch environment</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="batch-environment">Batch environment</h1>
+<p>To run AWS Batch jobs, we need to first set up <em>Compute environments</em> and <em>Job queues</em>. The compute environments essentially specify the virtual cluster that AWS Batch has access to. This involves specifying which type of instances are allowed, as well as their size (i.e. number of CPUs and memory). For multi-node AWS Batch jobs, we also have to set up a shared file system and a customized Amazon Machine Image (AMI).</p>
+<h2 id="elastic-file-system">Elastic file system</h2>
+<p>Setting up an elastic file system is only necessary for <strong>multi-node batch jobs</strong>, i.e. for AWS Batch jobs that run each job on multiple  EC2 instances. For <strong>single-node batch jobs</strong>, skip this part and proceed to the next section.</p>
+<p>For multi-node AWS Batch jobs, we need to set up a shared file system called <em>elastic file system</em> (EFS). Furthermore, we need to set up a customized Amazon Machine Image (AMI) and mount the shared file system. Detailed instructions for these steps are provided in the AWS documentation: <a href="https://docs.aws.amazon.com/AmazonECS/latest/developerguide/using_efs.html">https://docs.aws.amazon.com/AmazonECS/latest/developerguide/using_efs.html</a>. Here, we provide a summary of the necessary steps:</p>
+<p>1) Create an elastic file system by logging into the AWS console in the web browser and go to <code>Services</code> -&gt; <code>EFS</code> -&gt; <code>Create file system</code>. By default, AWS will fill in all available subnets and include the default security group. For each zone, also add the SSH-security group. Proceed to step 2 and 3 and then select <code>Create File System</code>.</p>
+<p>2) Next, we have to modify the AMI that is used by AWS Batch and mount the file system. For this, we launch an EC2 instances with the ECS-optimized AMI, mount the EFS and create a custom AMI, which will then be used in the compute environment.</p>
+<p>Choose the Amazon Linux 2 AMI for your region from the following list:
+<a href="https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-optimized_AMI.html">https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-optimized_AMI.html</a>. For example, for the <code>us-east-1</code> region, this is AMI ID <code>ami-0fac5486e4cff37f4</code>. Click on <code>Launch Instance</code> to request an EC2 instance with the corresponding AMI. Using the <code>t2.micro</code> instance type is sufficient for this task. Next, connect to your instance via <code>ssh</code>:</p>
+<pre><code>ssh -Y -i ~/.ssh/user_key_pair -o StrictHostKeyChecking=no -l ec2-user public_DNS_of_instance
+</code></pre>
+
+<p>Once you are logged into the instance, following the subsequent steps:</p>
+<ul>
+<li>
+<p>Create mount point: <code>sudo mkdir /efs</code></p>
+</li>
+<li>
+<p>Install the amazon-efs-utils client software: <code>sudo yum install -y amazon-efs-utils</code></p>
+</li>
+<li>
+<p>Make a backup of the <code>/etc/fstab</code> file: <code>sudo cp /etc/fstab /etc/fstab.bak</code></p>
+</li>
+<li>
+<p>Open the original file with <code>sudo vi /etc/fstab</code> and add the following line to it. Replace <code>efs_dns_name</code> with the DNS name of your elastic file system (find the DNS name in the AWS console -&gt; <code>Services</code> -&gt; <code>EFS</code> -&gt; <code>name-of-your-file-system</code> -&gt; <code>DNS name</code>):</p>
+</li>
+</ul>
+<pre><code>efs_dns_name:/ /efs nfs4 nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2 0 0
+
+</code></pre>
+
+<ul>
+<li>
+<p>Reload file system: <code>sudo mount -a</code></p>
+</li>
+<li>
+<p>Validate that file system is mounted correctly: <code>mount | grep efs</code></p>
+</li>
+</ul>
+<p>Log out from the instance and create a new AMI from the running EC2 instance. Go the list of running EC2 instances in the AWS console and select your running instance -&gt; <code>Actions</code> -&gt; <code>Image</code> -&gt; <code>Create Image</code>. Choose an image name and then hit <code>Create Image</code>.</p>
+<h2 id="amis-without-hyper-threading">AMIs without hyper-threading</h2>
+<p>By default, AWS Batch uses hyperthreading (HT) on the underlying EC2 instances. For our workflow, we need to disable HT and limit the number of cores to half the number of virtual CPU cores on the corresponding EC2 instance. For example, the <code>r5.24xlarge</code> instance has 96 virtual CPUs and therefore 48 physical cores. To disable HT for this instance, we need to set the maximum number of allowed CPUs to 48.</p>
+<p>To disable HT, we modify the AMI that is used by AWS Batch. For this, we launch an EC2 instances with the ECS-optimized AMI, specify the maximum number of allowed CPUs and create a custom AMI. This AMI will then be used in the compute environment.</p>
+<p>If you already created an AMI in the previous section with an elastic file system, start a new EC2 instance using this AMI and connect to your instance. If you have not created an AMI yet, choose the Amazon Linux 2 AMI for your region from the following list:
+<a href="https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-optimized_AMI.html">https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-optimized_AMI.html</a>. For example, for the <code>us-east-1</code> region, this is AMI ID <code>ami-0fac5486e4cff37f4</code>. Click on <code>Launch Instance</code> to request an EC2 instance with the corresponding AMI. Using the <code>t2.micro</code> instance type is sufficient for this task. Next, connect to your instance via <code>ssh</code>:</p>
+<pre><code>ssh -Y -i ~/.ssh/user_key_pair -o StrictHostKeyChecking=no -l ec2-user public_DNS_of_instance
+</code></pre>
+
+<p>Open the grub config file with <code>sudo vi /etc/default/grub</code> and add <code>nr_cpus=48</code> to the line starting with <code>GRUB_CMDLINE_LINUX</code> (or however many cores are required). Apply the changes by running:</p>
+<pre><code>sudo grub2-mkconfig -o /boot/grub2/grub.cfg
+</code></pre>
+
+<p>Log out from the instance and create a new AMI from the running EC2 instance. Go the list of running EC2 instances in the AWS console and select your running instance -&gt; <code>Actions</code> -&gt; <code>Image</code> -&gt; <code>Create Image</code>. Choose an image name that indicates the maximum number of cores and then hit <code>Create Image</code>.</p>
+<p>Follow the same steps to create customized AMIs for other instance types with a differet number of CPU cores. E.g. for the <code>r5.12xlarge</code> instance, set <code>nr_cpus=24</code>, as this instance type has 48 vCPUs with 24 physicsal cores. For the <code>c5n.18xlarge</code> instance (72 vCPUs), set <code>nr_cpus=36</code> and so on. <strong>Important</strong>: To reproduce the numerical examples, create a total of 4 AMIs: one with a maximum of 8 cores, one with 24 cores, one with 18 cores and one with 48 cores. For multi-node batch jobs, always start the above process from the AMI that has the mounted elastic file system. Otherwise, start from the Amazon Linux 2 AMI.</p>
+<h2 id="create-environments">Create environments</h2>
+<p>The performance tests in the manuscript are carried out on several different compute environments. Most examples are run in the <code>M4_SPOT_MAXCPU_8</code> environment, using <code>m4.4xlarge</code> Spot instances with 8 physical cores per instance. The compute environment can be set up from the command line, with all parameters being specified in the <code>~/cloud-imaging/batch/create_environment_m4_spot.json</code> file. Open the file and fill in <strong>all missing entries</strong>. These are:</p>
+<ul>
+<li>
+<p><code>spotIamFleetRole</code>: Go to the AWS console -&gt; <code>Services</code> -&gt; <code>IAM</code> -&gt; <code>Roles</code> and find the <code>AmazonEC2SpotFleetRole</code>. Copy the role ARN and paste it.</p>
+</li>
+<li>
+<p><code>subnets</code>:  Find your subnets in the AWS console at <code>Services</code> -&gt; <code>VPC</code> -&gt; <code>Subnets</code>. Copy the Subnet ID of each subnet into the parameter file (separated by commas).</p>
+</li>
+<li>
+<p><code>securityGroupIds</code>: Find the security groups in the console at <code>Services</code> -&gt; <code>EC2</code> -&gt; <code>Security groups</code>. Copy-paste the Group ID of the default security group. To enable ssh access to instances of AWS Batch jobs, optionally create and add an SSH security group to this list.</p>
+</li>
+<li>
+<p><code>ec2KeyPair</code>: To connect to running instances via ssh, add the name of your AWS ssh key pair.</p>
+</li>
+<li>
+<p><code>imageId</code>: Go to the console -&gt; <code>Services</code> -&gt; <code>EC2</code> -&gt; <code>AMIs</code> and find the AMI that was created in the previous step. For the <code>M4_SPOT_MAXCPU_8</code> compute environment, find the AMI with 8 cores and copy-paste the AMI-ID into the parameter file.</p>
+</li>
+<li>
+<p><code>instanceRole</code>: Go to the AWS console -&gt; <code>Services</code> -&gt; <code>IAM</code> -&gt; <code>Roles</code>. Find the <code>SLIM-Extras_ECS_for_EC2</code> role and add its ARN to the parameter file.</p>
+</li>
+<li>
+<p><code>serviceRole</code>: Go to the AWS console -&gt; <code>Services</code> -&gt; <code>IAM</code> -&gt; <code>Roles</code>. Find the <code>SLIM-AWSBatchServiceRole</code> role and add its ARN.</p>
+</li>
+</ul>
+<p>Do not modify the parameters that are already filled in. Save the updated file and then run the following command within the <code>~/cloud-imaging</code> directory:</p>
+<pre><code># Create environment
+aws batch create-compute-environment --cli-input-json file://batch/create_environment_m4_spot.json
+</code></pre>
+
+<p>You can go to the AWS Console in the web browser and move to <code>Services</code> -&gt; <code>AWS Batch</code> -&gt; <code>Compute environments</code> to verify that the environment has been created successfully.</p>
+<p>To reproduce the numerical examples and performance tests, fill in the missing entries of the remaining parameter files: <code>create_environment_r5_spot_24.json</code> and <code>create_environment_r5_spot_48.json</code>. For the former, select the AMI with 24 cores and for the latter the AMI with 48 cores. Then re-run the above command for these parameter files:</p>
+<pre><code># Create environment w/ r5.24xlarge instances
+aws batch create-compute-environment --cli-input-json file://batch/create_environment_r5_spot_24.json
+
+# Create bybrid OMP-MPI environment w/ r5.24xlarge instances
+aws batch create-compute-environment --cli-input-json file://batch/create_environment_r5_spot_48.json
+</code></pre>
+
+<h2 id="create-queues">Create queues</h2>
+<p>For each compute environment, we need to create an AWS Batch Job queue, to which our workflow will submit its work loads. The queue parameter files do not need to be modified, so simply run the following commands from the terminal within the <code>~/cloud-imaging</code> directory:</p>
+<pre><code># Job queue M4 environment
+aws batch create-job-queue --cli-input-json file://batch/create_queue_m4_spot.json
+
+# Job queue R5 environment (24 cores)
+aws batch create-job-queue --cli-input-json file://batch/create_queue_r5_spot_24.json
+
+# Job queue R5 environment (48 cores)
+aws batch create-job-queue --cli-input-json file://batch/create_queue_r5_spot_48.json
+</code></pre>
+
+<h2 id="multi-node-environment-and-queues">Multi-node environment and queues</h2>
+<p>For multi-node AWS Batch jobs we have to set up compute environments similar to the ones as specified above, with the major difference that multi-node batch jobs do not support spot instances. We therefore set up on-demand compute environments for the <code>r5.24xlarge</code> and the <code>c5n.18xlarge</code> instance type.</p>
+<p>The environment parameters are specified in the files <code>create_environment_r5_multinode_24.json</code> and <code>create_environment_c5n_multinode_18.json</code>. Fill in the missing parameters like in the above example. For the <code>AMI</code> field, enter the AMI ID of the AMI with the elastic file system. Use the AMI with a maximum of 24 CPUs for the <code>r5</code> environment and the AMI with <code>18</code> cores for the <code>c5n</code> environment.</p>
+<p>The parameter files also specify a placement group called <code>MPIgroup</code>. The placement group ensures that EC2 instances of the MPI clusters are in close physical vicinity to each other. Create the <code>MPIgroup</code> placement group from the AWS console <code>Services</code> -&gt; <code>EC2</code> -&gt; <code>Placement Groups</code> -&gt; <code>Create Placement Group</code>. Enter the name <code>MPIgroup</code> and select <code>Cluster</code> in the <code>Strategy</code> field. Then click the <code>create</code> button.</p>
+<p>After creating the placement group, generate the compute environments as in the above example:</p>
+<pre><code># Create on-demand environment w/ r5.24xlarge instances
+aws batch create-compute-environment --cli-input-json file://batch/create_environment_r5_multinode_24.json
+
+# Create on-demand environment w/ c5n.18xlarge instances
+aws batch create-compute-environment --cli-input-json file://batch/create_environment_c5n_multinode_18.json
+</code></pre>
+
+<p>Finally, create the corresponding batch queues by running the following commands:</p>
+<pre><code># Job queue r5 on-demand
+aws batch create-job-queue --cli-input-json file://batch/create_queue_r5_multinode_24.json
+
+# Job queue c5n on-demand
+aws batch create-job-queue --cli-input-json file://batch/create_queue_c5n_multinode_18.json
+</code></pre>
+
+<h2 id="vpc-endpoints">VPC endpoints</h2>
+<p>For multi-node batch jobs, follow these steps to create endpoints for S3 and SQS in your virtual privat cloud:</p>
+<ul>
+<li>
+<p>Log into the AWS console in the browser and go to: <code>Services</code> -&gt; <code>VPC</code> -&gt; <code>Endpoints</code>.</p>
+</li>
+<li>
+<p>Create an S3 endpoint: click <code>Create Endpoint</code> and select the S3 service name from the list, e.g. <code>com.amazonaws.us-east-1.s3</code>. Next, select the only available route table in the section <code>Configure route tables</code>. Finalize the endpoint by clicking the <code>Create Endpoint</code> button.</p>
+</li>
+<li>
+<p>Create an SQS endpoint:  click <code>Create Endpoint</code>  and select the SQS service name from the list, e.g. <code>com.amazonaws.us-east-1.sqs</code>. Ensure that all availability zones are selected. Under <code>Security group</code>, select the default security group, as well as the <code>SSH</code> group. Finalize the endpoint by clicking the <code>Create Endpoint</code> button.</p>
+</li>
+</ul>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../lambda/" class="btn btn-neutral float-right" title="Upload Lambda functions">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../roles/" class="btn btn-neutral" title="Create IAM roles"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../roles/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../lambda/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../search/main.js" defer></script>
+
+</body>
+</html>

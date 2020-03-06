@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>Create IAM roles - Event-driven seismic imaging in the cloud</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Create IAM roles";
+    var mkdocs_page_input_path = "roles.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> Event-driven seismic imaging in the cloud</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="..">Home</a>
+	    </li>
+          
+            <li class="toctree-l1 current">
+		
+    <a class="current" href="./">Create IAM roles</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l2"><a href="#iam-roles">IAM roles</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l3" href="#user-roles">User roles</a></li>
+        
+            <li><a class="toctree-l3" href="#service-roles">Service roles</a></li>
+        
+        </ul>
+    
+
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../batch/">Set up batch environment</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../lambda/">Upload Lambda functions</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../sqs/">Create message queues</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../step/">Step Functions</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../docker/">Create docker container</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../performance/">Performance tests</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../trouble/">Troubleshooting</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../about/">About</a>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">Event-driven seismic imaging in the cloud</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>Create IAM roles</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="iam-roles">IAM roles</h1>
+<p>AWS manages access to its services through <em>roles</em>. Users and AWS services such as Lambda functions require explicit permissions to interact with other services or to request computational resources. <em>User roles</em> provide permissions to a specific IAM user, while <em>service roles</em> allow specific AWS services to interact with each other. For example, to start an AWS Batch job from the command line, users require the <code>AWSBatchFullAccess</code> user role. If we want to allow a container launched by AWS Batch to send messages to an SQS queue, we need to provide an AWS service role for AWS Batch and attach the <code>AmazonSQSFullAccess</code> policy to it. The following instructions create the necessary user and service roles for our workflow.</p>
+<h2 id="user-roles">User roles</h2>
+<p>Log into the AWS console (<a href="https://console.aws.amazon.com/console">https://console.aws.amazon.com/console</a>) and check if the following roles are attached to your user in <code>Services</code> -&gt; <code>IAM</code> -&gt; <code>Users</code> -&gt; <code>your_user_name</code>. Run the following commands in a terminal to obtain the missing permissions that are not attached to your account so far. (Replace <code>your_user_name</code> by your IAM user name).</p>
+<pre><code># EC2
+aws iam attach-user-policy --user-name your_user_name --policy-arn \
+    arn:aws:iam::aws:policy/AmazonEC2FullAccess
+
+# Batch
+aws iam attach-user-policy --user-name your_user_name --policy-arn \
+    arn:aws:iam::aws:policy/AWSBatchFullAccess
+
+# ECR
+aws iam attach-user-policy --user-name your_user_name --policy-arn \
+    arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryFullAccess
+
+# Lambda
+aws iam attach-user-policy --user-name your_user_name --policy-arn \
+    arn:aws:iam::aws:policy/AWSLambdaFullAccess     
+
+# SQS
+aws iam attach-user-policy --user-name your_user_name --policy-arn \
+    arn:aws:iam::aws:policy/AmazonSQSFullAccess
+
+# Step Functions
+aws iam attach-user-policy --user-name your_user_name --policy-arn \
+    arn:aws:iam::aws:policy/AWSStepFunctionsFullAccess
+
+# S3 Read
+aws iam attach-user-policy --user-name your_user_name --policy-arn \
+    arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess
+</code></pre>
+
+<h2 id="service-roles">Service roles</h2>
+<p>The following service roles are required for the workflow:</p>
+<ol>
+<li><code>AWSBatchServiceRole</code></li>
+</ol>
+<p>Check if the role exists in your AWS console under <em>IAM</em> -&gt; <em>Roles</em>. If not, open a terminal in the current directory (<code>~/aws_workflow</code>) and run the following commands:</p>
+<pre><code># Create role
+aws iam create-role --role-name AWSBatchServiceRole  \
+    --assume-role-policy-document file://service_roles/create_AWSBatchServiceRole.json \
+    --description &quot;Allows Batch to create and manage AWS resources on your behalf.&quot;
+
+# Attach policy
+aws iam attach-role-policy --role-name AWSBatchServiceRole --policy-arn \
+    arn:aws:iam::aws:policy/service-role/AWSBatchServiceRole
+</code></pre>
+
+<ol>
+<li><code>StepFunctionsLambdaRole</code></li>
+</ol>
+<p>Check if the role exists in <em>IAM</em> -&gt; <em>Roles</em>. If not, open a terminal in the current directory (<code>~/cloud-imaging</code>) and run the following commands:</p>
+<pre><code># Create role
+aws iam create-role --role-name StepFunctionsLambdaRole  \
+    --assume-role-policy-document file://service_roles/create_StepFunctionsLambdaRole.json \
+    --description &quot;Allows Step Functions to access AWS resources on your behalf.&quot;
+
+# Attach policy
+aws iam attach-role-policy --role-name StepFunctionsLambdaRole --policy-arn \
+    arn:aws:iam::aws:policy/service-role/AWSLambdaRole
+</code></pre>
+
+<ol>
+<li><code>SLIM-Extras_ECS_for_EC2</code></li>
+</ol>
+<p>Create this role, regardless of whether any other ECS roles exist so far:</p>
+<pre><code># Create role
+aws iam create-role --role-name SLIM-Extras_ECS_for_EC2  \
+    --assume-role-policy-document file://service_roles/create_SLIM-Extras_ECS_for_EC2.json \
+    --description &quot;Allows EC2 instances in an ECS cluster to access ECS.&quot;
+
+# Attach policies
+aws iam attach-role-policy --role-name SLIM-Extras_ECS_for_EC2 --policy-arn \
+    arn:aws:iam::aws:policy/AmazonSQSFullAccess
+
+aws iam attach-role-policy --role-name SLIM-Extras_ECS_for_EC2 --policy-arn \
+    arn:aws:iam::aws:policy/AmazonS3FullAccess
+
+aws iam attach-role-policy --role-name SLIM-Extras_ECS_for_EC2 --policy-arn \
+    arn:aws:iam::aws:policy/IAMReadOnlyAccess
+
+aws iam attach-role-policy --role-name SLIM-Extras_ECS_for_EC2 --policy-arn \
+    arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role
+</code></pre>
+
+<ol>
+<li><code>SLIM-Extras_for_Lambda</code></li>
+</ol>
+<p>Create this role, regardless of whether any other Lambda roles exist so far:</p>
+<pre><code># Create role
+aws iam create-role --role-name SLIM-Extras_for_Lambda \
+    --assume-role-policy-document file://service_roles/create_SLIM-Extras_for_Lambda.json \
+    --description &quot;Allows Lambda functions to call AWS services on your behalf.&quot;
+
+# Attach policies
+aws iam attach-role-policy --role-name SLIM-Extras_for_Lambda --policy-arn \
+    arn:aws:iam::aws:policy/AmazonSQSFullAccess
+
+aws iam attach-role-policy --role-name SLIM-Extras_for_Lambda --policy-arn \
+    arn:aws:iam::aws:policy/AmazonS3FullAccess
+
+aws iam attach-role-policy --role-name SLIM-Extras_for_Lambda --policy-arn \
+    arn:aws:iam::aws:policy/AWSLambdaFullAccess
+
+aws iam attach-role-policy --role-name SLIM-Extras_for_Lambda --policy-arn \
+    arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole
+
+# Create and attach specialized Lambda for Batch policy
+aws iam create-policy --policy-name LambdaBatchExecutionPolicy \
+    --policy-document file://service_roles/create_LambdaBatchExecutionPolicy.json\
+    --description &quot;Allow Lambda to access AWS Batch services including job registration and submission.&quot;
+
+aws iam attach-role-policy --role-name SLIM-Extras_for_Lambda \
+    --policy-arn arn:aws:iam::851065145468:policy/LambdaBatchExecutionPolicy
+</code></pre>
+
+<ol>
+<li>Roles for using Spot instances with Batch</li>
+</ol>
+<p>Create the following roles to enable spot instances for usage with Batch:</p>
+<pre><code># AmazonEC2SpotFleetRole
+aws iam create-role --role-name AmazonEC2SpotFleetRole --assume-role-policy-document '{&quot;Version&quot;:&quot;2012-10-17&quot;,&quot;Statement&quot;:[{&quot;Sid&quot;:&quot;&quot;,&quot;Effect&quot;:&quot;Allow&quot;,&quot;Principal&quot;:{&quot;Service&quot;:&quot;spotfleet.amazonaws.com&quot;},&quot;Action&quot;:&quot;sts:AssumeRole&quot;}]}'
+
+# AWSServiceRoleForEC2Spot
+aws iam create-service-linked-role --aws-service-name spot.amazonaws.com
+
+# AWSServiceRoleForEC2SpotFleet
+aws iam create-service-linked-role --aws-service-name spotfleet.amazonaws.com
+</code></pre>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../batch/" class="btn btn-neutral float-right" title="Set up batch environment">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href=".." class="btn btn-neutral" title="Home"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href=".." style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../batch/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../search/main.js" defer></script>
+
+</body>
+</html>

@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>Performance tests - Event-driven seismic imaging in the cloud</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Performance tests";
+    var mkdocs_page_input_path = "performance.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> Event-driven seismic imaging in the cloud</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="..">Home</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../roles/">Create IAM roles</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../batch/">Set up batch environment</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../lambda/">Upload Lambda functions</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../sqs/">Create message queues</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../step/">Step Functions</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../docker/">Create docker container</a>
+	    </li>
+          
+            <li class="toctree-l1 current">
+		
+    <a class="current" href="./">Performance tests</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l2"><a href="#preparations-before-execution">Preparations before execution</a></li>
+    
+
+    <li class="toctree-l2"><a href="#reproducing-the-examples">Reproducing the examples</a></li>
+    
+
+    <li class="toctree-l2"><a href="#weak-scaling">Weak Scaling</a></li>
+    
+
+    <li class="toctree-l2"><a href="#stochastic-gradient-descent-example">Stochastic gradient descent example</a></li>
+    
+
+    <li class="toctree-l2"><a href="#strong-scaling-with-openmp">Strong scaling with OpenMP</a></li>
+    
+
+    <li class="toctree-l2"><a href="#strong-scaling-with-mpi">Strong scaling with MPI</a></li>
+    
+
+    <li class="toctree-l2"><a href="#hybrid-example">Hybrid example</a></li>
+    
+
+    <li class="toctree-l2"><a href="#cost-examples">Cost examples</a></li>
+    
+
+    <li class="toctree-l2"><a href="#resilience">Resilience</a></li>
+    
+
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../trouble/">Troubleshooting</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../about/">About</a>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">Event-driven seismic imaging in the cloud</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>Performance tests</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="preparations-before-execution">Preparations before execution</h1>
+<p>Reproducing the numerical examples and performance tests requires uploading the BP 2004 velocity model and data set to your S3 account. First, download the velocity model, the mask for the water bottom and the data set (7.4 GB) from the Georgia Tech FTP server:</p>
+<pre><code>cd ~/cloud-imaging/numerical_examples
+wget ftp://slim.gatech.edu/data/users/pwitte/models/bp_synthetic_2004_velocity.h5
+wget ftp://slim.gatech.edu/data/users/pwitte/models/bp_synthetic_2004_water_bottom.h5
+wget ftp://slim.gatech.edu/data/users/pwitte/data/bp_synthetic_2004.tar.gz
+</code></pre>
+
+<p>Extract the seismic data with <code>tar -xzvf bp_synthetic_2004.tar.gz</code> in the current directory. The models and the data need to be uploaded to an S3 bucket. Check if any pre-existing buckets are available in the AWS console -&gt; <code>Services</code> -&gt; <code>S3</code>. If not, create a new bucket, such as <code>slim-bucket-common</code> (we will use this bucket name in the instructions, but you can choose a different name).</p>
+<p>We will upload the models to S3 with some meta data attached to it, to specify the grid spacing and origin. The script <code>~/cloud-imaging/numerical_examples/upload_files_to_s3.py</code> automatically does this and uploads the models and data to S3. Before running this script, open it and fill in your S3 bucket name and the paths where you want to store the models. Follow this naming convention:</p>
+<ul>
+<li>
+<p>paths for velocity and water model: <code>your_user_name/models</code></p>
+</li>
+<li>
+<p>seismic data: <code>your_user_name/data/</code></p>
+</li>
+</ul>
+<p>Update the script and run it from the directory into which you downloaded the data from the FTP server. Uploading the data will take a while, as there are 1,348 files to upload. Check whether the files have been uploaded successfully in the AWS console -&gt;<code>Services</code> -&gt; <code>S3</code> -&gt; <code>bucket-name</code>.</p>
+<h1 id="reproducing-the-examples">Reproducing the examples</h1>
+<p>Reproducing the numerical examples involves uploading the Python scripts of our application to S3. During runtime, the AWS Batch workers will fetch the script from S3 and run it to compute the gradients. Most examples do not involve running the full workflow, i.e. they do not require executing the AWS Step Function state machine. Instead, the <code>launch_test.py</code> scripts invoke the scaling tests for as single iteration of stochastic gradient descent (SGD), by manually triggering the Lambda function that is responsible for submitting the AWS Batch jobs. The <code>launch_tests.py</code> scripts also automatically collect the kernel and container run times from AWS and save them for plotting.</p>
+<p>Each example directory contains a job parameter file called <code>parameters.json</code>. Users are required to fill in the missing entries in each file, such as bucket names and the correct S3 paths.</p>
+<h1 id="weak-scaling">Weak Scaling</h1>
+<p>The scripts for reproducing the weak scaling example are located in <code>~/cloud-imaging/numerical_examples/weak_scaling</code>.</p>
+<p>1) First, upload the Python script <code>bp_synthetic_weak_scaling.py</code> to S3. Use the AWS console in the browser to upload the file or use the command line interface:</p>
+<pre><code>aws s3 cp bp_synthetic_weak_scaling.py s3://bucket-name/user-name/scripts/bp_synthetic_weak_scaling.py
+</code></pre>
+
+<p>2) The job parameters are specified in <code>parameters.json</code>. Fill in the following missing entries:</p>
+<ul>
+<li>
+<p><code>bucket_name</code>: name of your S3 bucket.</p>
+</li>
+<li>
+<p><code>partial_gradient_path</code>: S3 path where partial gradients will be stored. The path name must follow the naming convention <code>user_name/bp_partial_gradients/</code>. It is important <strong>not</strong> to omit the final <code>/</code> in the path name.</p>
+</li>
+<li>
+<p><code>full_gradient_path</code>: S3 path name for full gradients. Naming convention: <code>user_name/bp_full_gradients/</code></p>
+</li>
+<li>
+<p><code>model_path</code>: S3 paths in which models are stored. Naming convention: <code>user_name/models/</code></p>
+</li>
+<li>
+<p><code>variable_path</code>: S3 paths in which images are stored. Naming convention: <code>user_name/bp_variables/</code></p>
+</li>
+<li>
+<p><code>script_path</code>: S3 paths in which Python script is stored. Naming convention: <code>user_name/scripts/</code></p>
+</li>
+<li>
+<p><code>data_path</code>: S3 path in which the seismic data is stored. Naming convention: <code>user_name/data/</code></p>
+</li>
+<li>
+<p>optional: <code>container</code>. Specifies the Docker image for AWS Batch. If you modified the Docker image and uploaded it to your AWS account, replace with the full name of the new Docker image (i.e. the image URI plus the tag).</p>
+</li>
+</ul>
+<p>Do not modify the existing entries.</p>
+<p>3) To compute the gradient of the BP model for a given batch size, run the <code>launch_test.py</code> script with the batch size and the run number as input arguments. The script invokes the <code>ComputeGradients</code> Lambda function to submit the AWS Batch job for the gradient computations. The script then waits until the job has finished, the gradient summation is completed and the updated image is written to the S3 bucket. The script collects all timings automatically from AWS and writes the results to a pickle file. Execute the following commands to run the example for a batch size of 2:</p>
+<pre><code>export BATCHSIZE=2
+export RUN_ID=0
+python launch_test $BATCHSIZE $RUN_ID
+</code></pre>
+
+<p>4) To reproduce all weak scaling timings from the manuscript, run the shell script <code>./run_timings.sh</code>, which executes the <code>launch_test.py</code> script for a batch size ranging from <code>1</code> to <code>128</code>. The script runs three consecutive timings per batch size and waits 700 seconds in between runs to ensure that AWS Batch has enough time to shut down all EC2 instances. Otherwise, AWS Batch uses already running instances in the consecutive timings and the time it takes AWS Batch to launch the EC2 instances is not accounted for.</p>
+<p>5) Once all timings have been completed, the <code>plot_weak_scaling_results.py</code> script can be used to re-generate the figures from the manuscript. The original timings that are plotted in the manuscript are available in the <code>results</code> directory. Running the plotting script will create the figures using these timings.</p>
+<h1 id="stochastic-gradient-descent-example">Stochastic gradient descent example</h1>
+<p>To reproduce the full SGD example and run the Step Functions workflow for 30 iterations, follow the subsequent steps. All scripts for the examples are located in the <code>~/cloud-imaging/numerical_examples/imaging_example_sgd</code> directory.</p>
+<p>1) Upload the script <code>bp_synthetic_sgd.py</code> to <code>Services</code> -&gt; <code>S3</code> -&gt; <code>your-bucket</code> -&gt; <code>user-name</code> -&gt; <code>scripts</code> (either using the AWS console or using the CLI as in the previous example).</p>
+<p>2) All job parameters are specified in <code>parameters.json</code>. Fill in all missing entries, following the naming conventions as in the above "Weak scaling" example. Do not modify existing entries.</p>
+<p>3) In this example, we execute the full Step Functions state machine, not just a Lambda function to compute a single SGD iteration. Start the Step Functions workflow by running the following command from within the <code>~/cloud-imaging/numerical_examples/imaging_example_sgd</code> directory. First find the ARN of your state machine in the AWS console -&gt; <code>Step Functions</code> -&gt; <code>LSRTM-SGD</code> and then insert it into the following command:</p>
+<pre><code>aws stepfunctions start-execution \
+    --state-machine-arn   arn:aws:states:us-east-1:xxxxxxxxxxxx:stateMachine:LSRTM-SGD \
+    --input file://parameters.json
+</code></pre>
+
+<p>4) You can check the status of your workflow in the AWS console and get live updates of which task of the workflow is currently being executed. Go to the console -&gt; <code>Services</code> -&gt; <code>Step Functions</code> -&gt; <code>LSRTM-SGD</code> and find the latest run in the <code>Executions</code> window</p>
+<p>5) After the execution of the workflow has finished, re-create the seismic imaging from the manuscript with the script <code>plot_final_image.py</code>.</p>
+<h1 id="strong-scaling-with-openmp">Strong scaling with OpenMP</h1>
+<p>Scripts for the OpenMP strong scaling examples are located in <code>~/cloud-imaging/numerical_examples/strong_scaling</code>.</p>
+<p>1) Upload the script <code>bp_synthetic_omp_scaling_batch.py</code> to <code>Services</code> -&gt; <code>S3</code> -&gt; <code>your-bucket</code> -&gt; <code>user-name</code> -&gt; <code>scripts</code></p>
+<p>2) Fill in the missing entries of the job parameter file <code>parameter.json</code>. Follow the naming convention from before and do not modify existing entries.</p>
+<p>3) To reproduce the timings with AWS Batch, either run the Python script <code>launch_test.py</code> for a single run or run the shell script <code>run_timings_batch.sh</code> to reproduce all timings (3 runs each).</p>
+<p>4) To reproduce the timings on an EC2 bare metal instances, manually request a <code>r5.metal</code> instance from the AWS console -&gt; <code>Services</code> -&gt; <code>EC2</code> -&gt; <code>Launch Instance</code>. Ensure that ssh access to the instance is allowed by providing the corresponding security group. Once the instance is running, connect to the instance via ssh:</p>
+<pre><code>ssh -i ~/.ssh/user_key_pair.pem -o StrictHostKeyChecking=no -l ubuntu public_DNS_of_instance
+
+</code></pre>
+
+<p>On the instance, install git, clone the software repository and install all required packages:</p>
+<pre><code>sudo apt-get update
+sudo apt-get install git-core
+git clone https://github.gatech.edu/pwitte3/aws_workflow
+cd aws_workflow/numerical_examples/strong_scaling
+./setup.sh
+</code></pre>
+
+<p>For the bare metal examples, there are no json parameter files. Instead, parameters are hard-coded into the main script <code>bp_synthetic_omp_scaling_bare_metal.py</code>. Before running the example, open the script and fill in the missing S3 paths that point to the models and seismic data.</p>
+<p>Run the timings using the shell script <code>run_timings_bare_metal.sh</code>:</p>
+<pre><code>source ~/.bashrc
+./run_timings_bare_metal.sh
+</code></pre>
+
+<p>5) All figures from the manuscript can be re-generated with the Python script <code>plot_omp_timings.py</code>.</p>
+<h1 id="strong-scaling-with-mpi">Strong scaling with MPI</h1>
+<p>Scripts for the MPI strong scaling examples are located in <code>~/cloud-imaging/numerical_examples/strong_scaling_mpi</code>.</p>
+<p>1) Upload the scripts <code>bp_synthetic_mpi_scaling.py</code> and <code>bp_synthetic_single.py</code> to <code>Services</code> -&gt; <code>S3</code> -&gt; <code>your-bucket</code> -&gt; <code>user-name</code> -&gt; <code>scripts</code></p>
+<p>2) Fill in the missing entries of the job parameter file <code>parameter.json</code> and <code>parameter_single.json</code>. The latter is the parameter file for running the application as on a single node. Follow the naming convention from before and do not modify existing entries. The <code>parameter.json</code> parameter file has one additional required field:</p>
+<ul>
+<li><code>user_id</code>: Your AWS account number. This 12 digit number can be found in <code>Services</code> -&gt; <code>IAM</code> or in the top-right corner of the AWS console.</li>
+</ul>
+<p>The parameter files are set up for running the timings on <code>r5.24xlarge</code> instances. To run the timings on <code>c5n.18xlarge</code> instances, change the following entries in the json parameter files:</p>
+<ul>
+<li>
+<p><code>batch_queue</code>: <code>MultiNodeQueue_C5N_MAX_18</code></p>
+</li>
+<li>
+<p><code>instance_type</code>: <code>c5n.18xlarge</code></p>
+</li>
+<li>
+<p><code>omp_num_threads</code>: <code>18</code></p>
+</li>
+</ul>
+<p>3) To reproduce the strong scaling examples with MPI, either run the Python script <code>launch_test.py</code> for a single run or run the shell scripts <code>run_timings.sh</code> and <code>run_timings_single.sh</code> to reproduce all timings (3 runs each).</p>
+<p>4) After reproducing the timings, generate the plots from the manuscript by running the script <code>plot_mpi_strong_scaling.py</code> and <code>plot_mpi_strong_scaling_var.py</code>.</p>
+<h1 id="hybrid-example">Hybrid example</h1>
+<p>Scripts for the hybrid OpenMP-MPI examples are located in <code>~/cloud-imaging/numerical_examples/hybrid_scaling</code>.</p>
+<p>1) Upload the scripts <code>bp_synthetic_hybrid.py</code> and <code>bp_synthetic_omp.py</code> to <code>S3</code> -&gt; <code>your-bucket</code> -&gt; <code>user-name</code> -&gt; <code>scripts</code></p>
+<p>2) Fill in the missing entries of the job parameter file <code>parameter.json</code>. Follow the naming convention from before and do not modify existing entries.</p>
+<p>3) To reproduce the timings, run the Python script <code>launch_test.py</code> for a single run or the shell script <code>run_timings.sh</code> to reproduce all timings (3 runs each).</p>
+<p>4) After reproducing the timings, print the timings from the Table with the Python script <code>print_kernel_times.py</code>. To generate the plot, run the script <code>plot_hybrid_timings.py</code>.</p>
+<h1 id="cost-examples">Cost examples</h1>
+<p>Scripts for the cost comparison and cost saving strategies are located in <code>~/cloud-imaging/numerical_examples/cost</code>.</p>
+<p>1) Upload the script <code>bp_synthetic_cost.py</code> to <code>S3</code> -&gt; <code>your-bucket</code> -&gt; <code>user-name</code> -&gt; <code>scripts</code></p>
+<p>2) Fill in the missing entries of the job parameter file <code>parameter.json</code>. Follow the naming convention from before and do not modify existing entries.</p>
+<p>3) To reproduce the timings for the cost comparisons, run the python script <code>launch_test.py</code>. The script computes a gradient of the BP model for a batch size of <code>100</code> and saves the runtimes as a pickle file.</p>
+<p>4) To plot the cost comparison from the manuscript, run the Python script: <code>plot_cost_comparison.py</code>.</p>
+<p>5) To plot the cost saving strategies for spot instances, use the following Python scripts:</p>
+<ul>
+<li>
+<p><code>plot_cost_zone_c5n.py</code>: compare zones for the <code>c5n</code> instance.</p>
+</li>
+<li>
+<p><code>plot_cost_zone_c1.py</code>: compare zones for the <code>c1</code> instance.</p>
+</li>
+<li>
+<p><code>plot_cost_type.py</code>: compare different instances types within the <code>us-east-1c</code> zone.</p>
+</li>
+</ul>
+<p>The scripts can automatically fetch the historic spot prices from AWS for a specified time period. However, historic spot prices are only available for a period of three months, so we provide For this reason, the historic spot prices shown in the manuscript are saved as pickle files. The above scripts.</p>
+<h1 id="resilience">Resilience</h1>
+<p>Scripts for the resilience example are located in <code>~/cloud-imaging/numerical_examples/resilience</code>.</p>
+<p>1) Upload the script <code>bp_synthetic_cost.py</code> to <code>S3</code> -&gt; <code>your-bucket</code> -&gt; <code>user-name</code> -&gt; <code>scripts</code></p>
+<p>2) Fill in the missing entries of the job parameter file <code>parameter.json</code>. Follow the naming convention from before and do not modify existing entries.</p>
+<p>3) The script <code>launch_test.py</code> can be used to compute the gradient for the BP model for a given batch size and percentage of instance failures. To obtain the timings for a batch size of 100 and without failures (failure rate = 0), run:</p>
+<pre><code>python launch_test.py 100 0 0`.
+</code></pre>
+
+<p>where the first argument is batch size, the second argument is the run number and the third argument is the failure rate. To compute the gradient with 50 percent of the instances failing at random times during the run, type:</p>
+<pre><code>python launch_test.py batch_size 0 0.5`.
+</code></pre>
+
+<p>The timings from the manuscript for an increasing number of instance failures are modeled using the timings without instance failures and a two minute penalty for instance restarts. However, the script can be used to verify that the actual runtime with instance failures is predicted correctly by our model.</p>
+<p>4) To re-create the figures from the manuscript and plot the results, run the Python script <code>plot_resilience_modeled.py</code></p>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../trouble/" class="btn btn-neutral float-right" title="Troubleshooting">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../docker/" class="btn btn-neutral" title="Create docker container"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../docker/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../trouble/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../search/main.js" defer></script>
+
+</body>
+</html>

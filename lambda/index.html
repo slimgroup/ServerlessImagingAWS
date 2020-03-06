@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>Upload Lambda functions - Event-driven seismic imaging in the cloud</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Upload Lambda functions";
+    var mkdocs_page_input_path = "lambda.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> Event-driven seismic imaging in the cloud</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="..">Home</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../roles/">Create IAM roles</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../batch/">Set up batch environment</a>
+	    </li>
+          
+            <li class="toctree-l1 current">
+		
+    <a class="current" href="./">Upload Lambda functions</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l2"><a href="#lambda-functions">Lambda functions</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l3" href="#createqueues">CreateQueues</a></li>
+        
+            <li><a class="toctree-l3" href="#iterator">Iterator</a></li>
+        
+            <li><a class="toctree-l3" href="#computegradients">ComputeGradients</a></li>
+        
+            <li><a class="toctree-l3" href="#checks3forvariable">CheckS3ForVariable</a></li>
+        
+            <li><a class="toctree-l3" href="#reducegradients">ReduceGradients</a></li>
+        
+            <li><a class="toctree-l3" href="#cleanup">CleanUp</a></li>
+        
+        </ul>
+    
+
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../sqs/">Create message queues</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../step/">Step Functions</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../docker/">Create docker container</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../performance/">Performance tests</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../trouble/">Troubleshooting</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../about/">About</a>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">Event-driven seismic imaging in the cloud</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>Upload Lambda functions</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="lambda-functions">Lambda functions</h1>
+<p>All AWS Lambda functions used in the workflow are defined in the <code>~/cloud-imaging/lambda/</code> directory and each sub-directory contains the source code of the respective Lambda function. Some functions require the installation of additional python packages such as <code>numpy</code>. Follow the instructions to create deployment packages for the Lambda functions and to upload them to AWS.</p>
+<p>To create and upload the Lambda function, we need the Lambda service role that we created earlier. Log into the AWS console and go to <code>Services</code> -&gt; <code>IAM</code> -&gt; <code>Roles</code> -&gt; <code>SLIM-Extras_for_Lambda</code> to find the ARN of this role.</p>
+<h2 id="createqueues">CreateQueues</h2>
+<p>From within the <code>~/cloud-imaging/lambda/CreateQueues</code> directory, run the following command to create a zip archive:</p>
+<pre><code>cd ~/cloud-imaging/lambda/CreateQueues
+zip -r9 ../CreateQueue.zip .
+</code></pre>
+
+<p>When uploading the function for the first time, run the following command to create a new Lambda function. Replace <code>copy_paste_role_arn_here</code> with the ARN of the <code>SLIM-Extras_for_Lambda</code> role (see above instructions of how to obtain the ARN):</p>
+<pre><code># Upload function
+aws lambda create-function --function-name CreateQueues \
+    --zip-file fileb://../CreateQueues.zip \
+    --runtime python3.6 \
+    --timeout 300 \
+    --role copy_paste_role_arn_here \
+    --handler lambda_function.lambda_handler \
+    --memory-size 128
+</code></pre>
+
+<p>If you make changes to the Lambda function and need to update an existing function, first create a new zip file with the above command and then run the following command:</p>
+<pre><code># Upload function
+aws lambda update-function-code --function-name IteratorStochastic \
+    --zip-file fileb://../IteratorStochastic.zip
+</code></pre>
+
+<h2 id="iterator">Iterator</h2>
+<p>Create the zip archive:</p>
+<pre><code>cd ~/cloud-imaging/lambda/Iterator
+zip -r9 ../Iterator.zip .
+</code></pre>
+
+<p>Create and upload the <code>Iterator</code> Lambda function:</p>
+<pre><code># Upload function
+aws lambda create-function --function-name Iterator \
+    --zip-file fileb://../Iterator.zip \
+    --runtime python3.6 \
+    --timeout 10 \
+    --role copy_past_role_arn_here \
+    --handler lambda_function.lambda_handler \
+    --memory-size 128
+</code></pre>
+
+<p>Update an existing function with a new archive:</p>
+<pre><code># Upload function
+aws lambda update-function-code --function-name Iterator \
+    --zip-file fileb://../Iterator.zip
+</code></pre>
+
+<h2 id="computegradients">ComputeGradients</h2>
+<p>First, install <code>numpy</code> and <code>boto3</code> inside the <code>ComputeGradients</code> directory and create a zip archive. (Lambda functions have <code>boto3</code> pre-installed, but the default version is a deprecated version that misses some functionality, so we need to install the current release manually.)</p>
+<pre><code>cd ~/cloud-imaging/lambda/ComputeGradients
+pip install --target . numpy boto3
+zip -r9 ../ComputeGradients.zip .
+</code></pre>
+
+<p>Then create and upload the <code>ComputeGradients</code> Lambda function:</p>
+<pre><code># Upload function
+aws lambda create-function --function-name ComputeGradients \
+    --zip-file fileb://../ComputeGradients.zip \
+    --runtime python3.6 \
+    --timeout 900 \
+    --role copy_past_role_arn_here \
+    --handler lambda_function.gradient_handler \
+    --memory-size 128
+</code></pre>
+
+<p>To update an existing function with a new archive, run:</p>
+<pre><code># Upload function
+aws lambda update-function-code --function-name ComputeGradients \
+    --zip-file fileb://../ComputeGradients.zip
+</code></pre>
+
+<p>For multi-node AWS Batch jobs, repeat the above steps for the <code>ComputeGradients_MultiNode</code> Lambda function. First create a zip archive called <code>ComputeGradients_MultiNode.zip</code> and then run:</p>
+<pre><code># Upload multi-node function
+aws lambda create-function --function-name ComputeGradients_MultiNode \
+    --zip-file fileb://../ComputeGradients_MultiNode.zip \
+    --runtime python3.6 \
+    --timeout 900 \
+    --role copy_past_role_arn_here \
+    --handler lambda_function.gradient_handler \
+    --memory-size 128
+</code></pre>
+
+<h2 id="checks3forvariable">CheckS3ForVariable</h2>
+<p>Install python packages and create archive:</p>
+<pre><code>cd ~/cloud-imaging/lambda/CheckS3ForVariable
+pip install --target . boto3
+zip -r9 ../CheckS3ForVariable.zip .
+</code></pre>
+
+<p>Create and upload Lambda function:</p>
+<pre><code># Upload function
+aws lambda create-function --function-name CheckS3ForVariable \
+    --zip-file fileb://../CheckS3ForVariable.zip \
+    --runtime python3.6 \
+    --timeout 10 \
+    --role copy_past_role_arn_here \
+    --handler lambda_function.lambda_handler \
+    --memory-size 128
+</code></pre>
+
+<p>Update the function:</p>
+<pre><code># Upload function
+aws lambda update-function-code --function-name CheckS3ForVariable \
+    --zip-file fileb://../CheckS3ForVariable.zip
+</code></pre>
+
+<p>For multi-node AWS Batch jobs, repeat the above steps for the <code>CheckS3ForVariable_MultiNode</code> Lambda function. Create a new zip file called <code>CheckS3ForVariable_MultiNode.zip</code> and then run:</p>
+<pre><code># Upload function
+aws lambda create-function --function-name CheckS3ForVariable_MultiNode \
+    --zip-file fileb://../CheckS3ForVariable_MultiNode.zip \
+    --runtime python3.6 \
+    --timeout 10 \
+    --role copy_past_role_arn_here \
+    --handler lambda_function.lambda_handler \
+    --memory-size 128
+</code></pre>
+
+<h2 id="reducegradients">ReduceGradients</h2>
+<p>Install python packages and create archive:</p>
+<pre><code>cd ~/cloud-imaging/lambda/ReduceGradients
+pip install --target . numpy boto3
+zip -r9 ../ReduceGradients.zip .
+</code></pre>
+
+<p>Create and upload Lambda function:</p>
+<pre><code># Upload function
+aws lambda create-function --function-name ReduceGradients \
+    --zip-file fileb://../ReduceGradients.zip \
+    --runtime python3.6 \
+    --timeout 60 \
+    --role copy_past_role_arn_here \
+    --handler lambda_function.lambda_handler \
+    --memory-size 512
+</code></pre>
+
+<p>Update the function:</p>
+<pre><code># Upload function
+aws lambda update-function-code --function-name CheckS3FReduceGradientsorVariable \
+    --zip-file fileb://../ReduceGradients.zip
+</code></pre>
+
+<h2 id="cleanup">CleanUp</h2>
+<p>Create archive:</p>
+<pre><code>cd ~/cloud-imaging/lambda/CleanUp
+zip -r9 ../CleanUp.zip .
+</code></pre>
+
+<p>Create and upload Lambda function:</p>
+<pre><code># Upload function
+aws lambda create-function --function-name CleanUp \
+    --zip-file fileb://../CleanUp.zip \
+    --runtime python3.6 \
+    --timeout 10 \
+    --role copy_past_role_arn_here \
+    --handler lambda_function.lambda_handler \
+    --memory-size 128
+</code></pre>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../sqs/" class="btn btn-neutral float-right" title="Create message queues">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../batch/" class="btn btn-neutral" title="Set up batch environment"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../batch/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../sqs/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../search/main.js" defer></script>
+
+</body>
+</html>
