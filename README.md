@@ -2,10 +2,9 @@
 
 This repository contains scripts and instructions to implement the AWS seismic imaging workflow described in "An event-driven approach to serverless seismic imaging in the cloud". The workflow consists of a serverless algorithm implementation using AWS Step Functions and an event-driven map-reduce implementation for computing gradients of objective functions.
 
-![](docs/figures/workflow.png)
-
-
  - [IEEE TPDS preprint on arXiv](https://arxiv.org/abs/1909.01279)
+
+![](docs/figures/workflow.jpg)
 
 ### Content
 
