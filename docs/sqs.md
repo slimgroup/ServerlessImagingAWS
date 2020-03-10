@@ -18,4 +18,4 @@ aws lambda create-event-source-mapping \
 
 You can verify that this trigger was created correctly by clicking on the queue and selecting the `Lambda Triggers` tab at the bottom of the page. The `ReduceGradients` function should be listed as a trigger.
 
-If we run our full worklow by executing the AWS Step Functions state machine, we can specify that we want the SQS queue(s) to be be set up automatically. In this case, set the `auto_create_queues` parameter of the `~/cloud-imaging/numerical_examples/imaging_example_sgd/parameters.json` file to `TRUE`. After executing the workflow, the queue is automatically removed.
+If we run our full worklow by executing the AWS Step Functions state machine, we can specify that we want the SQS queue(s) to be be set up automatically. In this case, set the `auto_create_queues` parameter of the `~/ServerlessImagingAWS/numerical_examples/imaging_example_sgd/parameters.json` file to `TRUE`. After executing the workflow, the queue is automatically removed.

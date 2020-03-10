@@ -69,7 +69,7 @@ Follow the same steps to create customized AMIs for other instance types with a 
 
 ## Create environments
 
-The performance tests in the manuscript are carried out on several different compute environments. Most examples are run in the `M4_SPOT_MAXCPU_8` environment, using `m4.4xlarge` Spot instances with 8 physical cores per instance. The compute environment can be set up from the command line, with all parameters being specified in the `~/cloud-imaging/batch/create_environment_m4_spot.json` file. Open the file and fill in **all missing entries**. These are:
+The performance tests in the manuscript are carried out on several different compute environments. Most examples are run in the `M4_SPOT_MAXCPU_8` environment, using `m4.4xlarge` Spot instances with 8 physical cores per instance. The compute environment can be set up from the command line, with all parameters being specified in the `~/ServerlessImagingAWS/batch/create_environment_m4_spot.json` file. Open the file and fill in **all missing entries**. These are:
 
  - `spotIamFleetRole`: Go to the AWS console -> `Services` -> `IAM` -> `Roles` and find the `AmazonEC2SpotFleetRole`. Copy the role ARN and paste it.
 
@@ -86,7 +86,7 @@ The performance tests in the manuscript are carried out on several different com
 
  - `serviceRole`: Go to the AWS console -> `Services` -> `IAM` -> `Roles`. Find the `SLIM-AWSBatchServiceRole` role and add its ARN.
 
-Do not modify the parameters that are already filled in. Save the updated file and then run the following command within the `~/cloud-imaging` directory:
+Do not modify the parameters that are already filled in. Save the updated file and then run the following command within the `~/ServerlessImagingAWS` directory:
 
 ```
 # Create environment
@@ -108,7 +108,7 @@ aws batch create-compute-environment --cli-input-json file://batch/create_enviro
 
 ## Create queues
 
-For each compute environment, we need to create an AWS Batch Job queue, to which our workflow will submit its work loads. The queue parameter files do not need to be modified, so simply run the following commands from the terminal within the `~/cloud-imaging` directory:
+For each compute environment, we need to create an AWS Batch Job queue, to which our workflow will submit its work loads. The queue parameter files do not need to be modified, so simply run the following commands from the terminal within the `~/ServerlessImagingAWS` directory:
 
 ```
 # Job queue M4 environment

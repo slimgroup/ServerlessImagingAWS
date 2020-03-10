@@ -1,7 +1,7 @@
 
 # Docker
 
-The required Docker images for the workflow are publicly available on Docker hub. The Docker image used by AWS Batch is specified in the job parameter files of the numerical examples (e.g. `~/cloud-imaging/numerical_examples/imaging_example_sgd/parameters.json`). In the current set up, all single-node batch jobs use the pre-existing Docker image `aws_seismic_imaging:v1.0`. To (optionally) obtain a local copy of the image, run:
+The required Docker images for the workflow are publicly available on Docker hub. The Docker image used by AWS Batch is specified in the job parameter files of the numerical examples (e.g. `~/ServerlessImagingAWS/numerical_examples/imaging_example_sgd/parameters.json`). In the current set up, all single-node batch jobs use the pre-existing Docker image `aws_seismic_imaging:v1.0`. To (optionally) obtain a local copy of the image, run:
 
 ```
 docker pull philippwitte/aws_seismic_imaging:v1.0
@@ -17,10 +17,10 @@ To reproduce the numerical examples, no actions regarding Docker are necessary.
 
 ## Single-node batch jobs
 
-To update or modify the Docker container for single node batch jobs, first pull the current version of the image with the above command. Update the Dockerfile in `~/cloud-imaging/docker/single_node_batch` as desired and then rebuild the Docker image with a new tag (e.g. `v1.1`):
+To update or modify the Docker container for single node batch jobs, first pull the current version of the image with the above command. Update the Dockerfile in `~/ServerlessImagingAWS/docker/single_node_batch` as desired and then rebuild the Docker image with a new tag (e.g. `v1.1`):
 
 ```
-cd ~/cloud-imaging/docker/single_node_batch
+cd ~/ServerlessImagingAWS/docker/single_node_batch
 docker build -t aws_seismic_imaging:tag .
 ```
 
@@ -56,10 +56,10 @@ Note the full name of your new image (`URI:tag`) and update the job parameter fi
 
 ## Multi-node batch jobs
 
-Updating or modifying the Docker image for multi-node AWS Batch jobs follows the same steps as the previous instructions. Namely, modify the Dockerfile in `~/cloud-imaging/docker/multi_node_batch` and rebuild the image using a new tag (e.g. `v1.1`)
+Updating or modifying the Docker image for multi-node AWS Batch jobs follows the same steps as the previous instructions. Namely, modify the Dockerfile in `~/ServerlessImagingAWS/docker/multi_node_batch` and rebuild the image using a new tag (e.g. `v1.1`)
 
 ```
-cd ~/cloud-imaging/docker/multi_node_batch
+cd ~/ServerlessImagingAWS/docker/multi_node_batch
 docker build -t aws_seismic_imaging_mpi:tag .
 ```
 

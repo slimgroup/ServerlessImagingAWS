@@ -60,7 +60,7 @@ aws iam attach-role-policy --role-name AWSBatchServiceRole --policy-arn \
 
 2. ` StepFunctionsLambdaRole`
 
-Check if the role exists in *IAM* -> *Roles*. If not, open a terminal in the current directory (`~/cloud-imaging`) and run the following commands:
+Check if the role exists in *IAM* -> *Roles*. If not, open a terminal in the current directory (`~/ServerlessImagingAWS`) and run the following commands:
 
 ```
 # Create role

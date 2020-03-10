@@ -3,7 +3,7 @@
 Reproducing the numerical examples and performance tests requires uploading the BP 2004 velocity model and data set to your S3 account. First, download the velocity model, the mask for the water bottom and the data set (7.4 GB) from the Georgia Tech FTP server:
 
 ```
-cd ~/cloud-imaging/numerical_examples
+cd ~/ServerlessImagingAWS/numerical_examples
 wget ftp://slim.gatech.edu/data/users/pwitte/models/bp_synthetic_2004_velocity.h5
 wget ftp://slim.gatech.edu/data/users/pwitte/models/bp_synthetic_2004_water_bottom.h5
 wget ftp://slim.gatech.edu/data/users/pwitte/data/bp_synthetic_2004.tar.gz
@@ -11,7 +11,7 @@ wget ftp://slim.gatech.edu/data/users/pwitte/data/bp_synthetic_2004.tar.gz
 
 Extract the seismic data with `tar -xzvf bp_synthetic_2004.tar.gz` in the current directory. The models and the data need to be uploaded to an S3 bucket. Check if any pre-existing buckets are available in the AWS console -> `Services` -> `S3`. If not, create a new bucket, such as `slim-bucket-common` (we will use this bucket name in the instructions, but you can choose a different name).
 
-We will upload the models to S3 with some meta data attached to it, to specify the grid spacing and origin. The script `~/cloud-imaging/numerical_examples/upload_files_to_s3.py` automatically does this and uploads the models and data to S3. Before running this script, open it and fill in your S3 bucket name and the paths where you want to store the models. Follow this naming convention:
+We will upload the models to S3 with some meta data attached to it, to specify the grid spacing and origin. The script `~/ServerlessImagingAWS/numerical_examples/upload_files_to_s3.py` automatically does this and uploads the models and data to S3. Before running this script, open it and fill in your S3 bucket name and the paths where you want to store the models. Follow this naming convention:
 
  - paths for velocity and water model: `your_user_name/models`
 
@@ -28,7 +28,7 @@ Each example directory contains a job parameter file called `parameters.json`. U
 
 # Weak Scaling
 
-The scripts for reproducing the weak scaling example are located in `~/cloud-imaging/numerical_examples/weak_scaling`.
+The scripts for reproducing the weak scaling example are located in `~/ServerlessImagingAWS/numerical_examples/weak_scaling`.
 
 1) First, upload the Python script `bp_synthetic_weak_scaling.py` to S3. Use the AWS console in the browser to upload the file or use the command line interface:
 
@@ -72,13 +72,13 @@ python launch_test $BATCHSIZE $RUN_ID
 
 # Stochastic gradient descent example
 
-To reproduce the full SGD example and run the Step Functions workflow for 30 iterations, follow the subsequent steps. All scripts for the examples are located in the `~/cloud-imaging/numerical_examples/imaging_example_sgd` directory.
+To reproduce the full SGD example and run the Step Functions workflow for 30 iterations, follow the subsequent steps. All scripts for the examples are located in the `~/ServerlessImagingAWS/numerical_examples/imaging_example_sgd` directory.
 
 1) Upload the script `bp_synthetic_sgd.py` to `Services` -> `S3` -> `your-bucket` -> `user-name` -> `scripts` (either using the AWS console or using the CLI as in the previous example).
 
 2) All job parameters are specified in `parameters.json`. Fill in all missing entries, following the naming conventions as in the above "Weak scaling" example. Do not modify existing entries.
 
-3) In this example, we execute the full Step Functions state machine, not just a Lambda function to compute a single SGD iteration. Start the Step Functions workflow by running the following command from within the `~/cloud-imaging/numerical_examples/imaging_example_sgd` directory. First find the ARN of your state machine in the AWS console -> `Step Functions` -> `LSRTM-SGD` and then insert it into the following command:
+3) In this example, we execute the full Step Functions state machine, not just a Lambda function to compute a single SGD iteration. Start the Step Functions workflow by running the following command from within the `~/ServerlessImagingAWS/numerical_examples/imaging_example_sgd` directory. First find the ARN of your state machine in the AWS console -> `Step Functions` -> `LSRTM-SGD` and then insert it into the following command:
 
 ```
 aws stepfunctions start-execution \
@@ -93,7 +93,7 @@ aws stepfunctions start-execution \
 
 # Strong scaling with OpenMP
 
-Scripts for the OpenMP strong scaling examples are located in `~/cloud-imaging/numerical_examples/strong_scaling`.
+Scripts for the OpenMP strong scaling examples are located in `~/ServerlessImagingAWS/numerical_examples/strong_scaling`.
 
 1) Upload the script `bp_synthetic_omp_scaling_batch.py` to `Services` -> `S3` -> `your-bucket` -> `user-name` -> `scripts`
 
@@ -132,7 +132,7 @@ source ~/.bashrc
 
 # Strong scaling with MPI
 
-Scripts for the MPI strong scaling examples are located in `~/cloud-imaging/numerical_examples/strong_scaling_mpi`.
+Scripts for the MPI strong scaling examples are located in `~/ServerlessImagingAWS/numerical_examples/strong_scaling_mpi`.
 
 1) Upload the scripts `bp_synthetic_mpi_scaling.py` and `bp_synthetic_single.py` to `Services` -> `S3` -> `your-bucket` -> `user-name` -> `scripts`
 
@@ -156,7 +156,7 @@ The parameter files are set up for running the timings on `r5.24xlarge` instance
 
 # Hybrid example
 
-Scripts for the hybrid OpenMP-MPI examples are located in `~/cloud-imaging/numerical_examples/hybrid_scaling`.
+Scripts for the hybrid OpenMP-MPI examples are located in `~/ServerlessImagingAWS/numerical_examples/hybrid_scaling`.
 
 1) Upload the scripts `bp_synthetic_hybrid.py` and `bp_synthetic_omp.py` to `S3` -> `your-bucket` -> `user-name` -> `scripts`
 
@@ -169,7 +169,7 @@ Scripts for the hybrid OpenMP-MPI examples are located in `~/cloud-imaging/numer
 
 # Cost examples
 
-Scripts for the cost comparison and cost saving strategies are located in `~/cloud-imaging/numerical_examples/cost`.
+Scripts for the cost comparison and cost saving strategies are located in `~/ServerlessImagingAWS/numerical_examples/cost`.
 
 1) Upload the script `bp_synthetic_cost.py` to `S3` -> `your-bucket` -> `user-name` -> `scripts`
 
@@ -192,7 +192,7 @@ The scripts can automatically fetch the historic spot prices from AWS for a spec
 
 # Resilience
 
-Scripts for the resilience example are located in `~/cloud-imaging/numerical_examples/resilience`.
+Scripts for the resilience example are located in `~/ServerlessImagingAWS/numerical_examples/resilience`.
 
 
 1) Upload the script `bp_synthetic_cost.py` to `S3` -> `your-bucket` -> `user-name` -> `scripts`

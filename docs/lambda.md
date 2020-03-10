@@ -1,16 +1,16 @@
 # Lambda functions
 
-All AWS Lambda functions used in the workflow are defined in the `~/cloud-imaging/lambda/` directory and each sub-directory contains the source code of the respective Lambda function. Some functions require the installation of additional python packages such as `numpy`. Follow the instructions to create deployment packages for the Lambda functions and to upload them to AWS.
+All AWS Lambda functions used in the workflow are defined in the `~/ServerlessImagingAWS/lambda/` directory and each sub-directory contains the source code of the respective Lambda function. Some functions require the installation of additional python packages such as `numpy`. Follow the instructions to create deployment packages for the Lambda functions and to upload them to AWS.
 
 To create and upload the Lambda function, we need the Lambda service role that we created earlier. Log into the AWS console and go to `Services` -> `IAM` -> `Roles` -> `SLIM-Extras_for_Lambda` to find the ARN of this role.
 
 
 ## CreateQueues
 
-From within the `~/cloud-imaging/lambda/CreateQueues` directory, run the following command to create a zip archive:
+From within the `~/ServerlessImagingAWS/lambda/CreateQueues` directory, run the following command to create a zip archive:
 
 ```
-cd ~/cloud-imaging/lambda/CreateQueues
+cd ~/ServerlessImagingAWS/lambda/CreateQueues
 zip -r9 ../CreateQueue.zip .
 ```
 
@@ -41,7 +41,7 @@ aws lambda update-function-code --function-name IteratorStochastic \
 Create the zip archive:
 
 ```
-cd ~/cloud-imaging/lambda/Iterator
+cd ~/ServerlessImagingAWS/lambda/Iterator
 zip -r9 ../Iterator.zip .
 ```
 
@@ -71,7 +71,7 @@ aws lambda update-function-code --function-name Iterator \
 First, install `numpy` and `boto3` inside the `ComputeGradients` directory and create a zip archive. (Lambda functions have `boto3` pre-installed, but the default version is a deprecated version that misses some functionality, so we need to install the current release manually.)
 
 ```
-cd ~/cloud-imaging/lambda/ComputeGradients
+cd ~/ServerlessImagingAWS/lambda/ComputeGradients
 pip install --target . numpy boto3
 zip -r9 ../ComputeGradients.zip .
 ```
@@ -115,7 +115,7 @@ aws lambda create-function --function-name ComputeGradients_MultiNode \
 Install python packages and create archive:
 
 ```
-cd ~/cloud-imaging/lambda/CheckS3ForVariable
+cd ~/ServerlessImagingAWS/lambda/CheckS3ForVariable
 pip install --target . boto3
 zip -r9 ../CheckS3ForVariable.zip .
 ```
@@ -159,7 +159,7 @@ aws lambda create-function --function-name CheckS3ForVariable_MultiNode \
 Install python packages and create archive:
 
 ```
-cd ~/cloud-imaging/lambda/ReduceGradients
+cd ~/ServerlessImagingAWS/lambda/ReduceGradients
 pip install --target . numpy boto3
 zip -r9 ../ReduceGradients.zip .
 ```
@@ -190,7 +190,7 @@ aws lambda update-function-code --function-name CheckS3FReduceGradientsorVariabl
 Create archive:
 
 ```
-cd ~/cloud-imaging/lambda/CleanUp
+cd ~/ServerlessImagingAWS/lambda/CleanUp
 zip -r9 ../CleanUp.zip .
 ```
 
