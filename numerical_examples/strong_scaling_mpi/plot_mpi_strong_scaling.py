@@ -52,13 +52,13 @@ timings_c5n = []
 timings_c5n_metal = []
 
 for filename in file_timings_r5:
-    timings_r5.append(np.load(path_r5 + filename))    # timings: list of num_files entries: 1 x 6
+    timings_r5.append(np.load(path_r5 + filename, allow_pickle=True))    # timings: list of num_files entries: 1 x 6
 for filename in file_timings_r5_metal:
-    timings_r5_metal.append(np.load(path_r5_metal + filename))
+    timings_r5_metal.append(np.load(path_r5_metal + filename, allow_pickle=True))
 for filename in file_timings_c5n:
-    timings_c5n.append(np.load(path_c5n + filename))
+    timings_c5n.append(np.load(path_c5n + filename, allow_pickle=True))
 for filename in file_timings_c5n_metal:
-    timings_c5n_metal.append(np.load(path_c5n_metal + filename))
+    timings_c5n_metal.append(np.load(path_c5n_metal + filename, allow_pickle=True))
 
 # Timings
 # create=0; start=1; end=2; var=3; devito=4; script=5
@@ -160,7 +160,7 @@ ax.tick_params(axis='x', labelsize=10)
 ax.set_ylim([0.15, 1.1])
 plt.legend(['r5.24xlarge', 'r5.metal', 'c5n.18xlarge', 'c5n.metal'], loc='lower left', fontsize=9)
 plt.tight_layout()
-savefig('strong_scaling_mpi_speedup_single_thread.png', dpi=300, format='png')
+savefig('strong_scaling_mpi_speedup_single_thread.png', dpi=600, format='png')
 
 # Timings plot
 fig, ax = plt.subplots(figsize=(3.33, 3))
@@ -179,7 +179,7 @@ ax.tick_params(axis='y', labelsize=10)
 ax.tick_params(axis='x', labelsize=10)
 plt.legend(['r5.24xlarge', 'r5.metal','c5n.18xlarge', 'c5n.metal'], loc='upper right', fontsize=9)
 plt.tight_layout()
-savefig('strong_scaling_mpi_runtime_single_thread.png', dpi=300, format='png')
+savefig('strong_scaling_mpi_runtime_single_thread.png', dpi=600, format='png')
 
 # Breakdown of timings c5n
 fig, ax = plt.subplots(figsize=(3.33, 3))
@@ -199,7 +199,7 @@ ax.tick_params(axis='x', labelsize=10)
 ax.set_ylim([30, 1400])
 plt.legend(['Job', 'Container', 'Python', 'Kernel'], fontsize=9)
 plt.tight_layout()
-savefig('strong_scaling_breakdown_c5n.png', dpi=300, format='png')
+savefig('strong_scaling_breakdown_c5n.png', dpi=600, format='png')
 
 # Cost r5 vs c5n
 r5_on_demand = 6.048/60/60
@@ -236,6 +236,6 @@ ax.tick_params(axis='y', labelsize=10)
 ax.tick_params(axis='x', labelsize=10)
 plt.legend(['r5 on-demand', 'r5 spot', 'c5n on-demand', 'c5n spot'], fontsize=9)
 plt.tight_layout()
-savefig('strong_scaling_cost_single_thread.png', dpi=300, format='png')
+savefig('strong_scaling_cost_single_thread.png', dpi=600, format='png')
 
 plt.show()

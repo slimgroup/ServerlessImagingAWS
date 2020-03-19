@@ -36,10 +36,10 @@ timings_r5 = []
 timings_c5n = []
 
 for filename in file_timings_r5:
-    timings_r5.append(np.load(path_r5 + filename))    # timings: list of num_files entries: 1 x 6
+    timings_r5.append(np.load(path_r5 + filename, allow_pickle=True))    # timings: list of num_files entries: 1 x 6
 
 for filename in file_timings_c5n:
-    timings_c5n.append(np.load(path_c5n + filename))
+    timings_c5n.append(np.load(path_c5n + filename, allow_pickle=True))
 
 # Timings
 # create=0; start=1; end=2; var=3; devito=4; script=5
@@ -106,7 +106,7 @@ autolabel(bar1, labels_c5n, 1.15)
 autolabel(bar2, labels_r5, 7)
 
 plt.tight_layout()
-savefig('strong_scaling_runtime_max_threads.png', dpi=300, format='png')
+savefig('strong_scaling_runtime_max_threads.png', dpi=600, format='png')
 
 # Cost r5 vs c5n
 # Cost plot (N. Virigina, May 13, 2019, 10:04 PM)
@@ -145,6 +145,6 @@ ax.tick_params(axis='x', labelsize=10)
 ax.set_ylim([0, .5])
 plt.legend(['r5 on-demand', 'r5 spot', 'c5n on-demand', 'c5n spot', ], fontsize=9)
 plt.tight_layout()
-savefig('strong_scaling_cost_max_thread.png', dpi=300, format='png')
+savefig('strong_scaling_cost_max_thread.png', dpi=600, format='png')
 
 plt.show()

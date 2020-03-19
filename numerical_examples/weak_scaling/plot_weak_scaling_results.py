@@ -25,7 +25,7 @@ for batchsize in instance_no:
 print("Found ", len(file_timings), " file(s).")
 timings = []
 for filename in file_timings:
-    timings.append(np.load(path + filename))
+    timings.append(np.load(path + filename, allow_pickle=True))
 
 # Timings
 # create=0; start=1; end=2; var=3;
@@ -76,7 +76,7 @@ ax.tick_params(axis='x', labelsize=10)
 ax.set_ylim([0, 1000])
 plt.legend(['Full job', 'Container', 'Reduction'], fontsize=9)
 plt.tight_layout()
-savefig('weak_scaling_gradients.png', dpi=300, format='png')
+savefig('weak_scaling_gradients.png', dpi=600, format='png')
 
 # Average startup time
 startup_times = job_time - container_time - reduction_time
@@ -88,7 +88,7 @@ ax.set_ylabel('Average startup time [s]', fontsize=10)
 ax.tick_params(axis='y', labelsize=10)
 ax.tick_params(axis='x', labelsize=10)
 plt.tight_layout()
-savefig('job_runtime_first.png', dpi=300, format='png')
+savefig('job_runtime_first.png', dpi=600, format='png')
 
 # Average container runtime and cost
 fig, ax1 = plt.subplots(figsize=(3.66, 3))
@@ -109,7 +109,7 @@ ax2.tick_params(axis='y', labelsize=10)
 fig.tight_layout()  # otherwise the right y-label is slightly clipped
 axx2 = gca()
 ax2.set_ylim([0, axx2.get_ylim()[1]*1.15])
-savefig('container_runtime_cost.png', dpi=300, format='png')
+savefig('container_runtime_cost.png', dpi=600, format='png')
 
 # Plot additional reduction time
 fig, ax = plt.subplots(figsize=(3.33, 3))
@@ -120,6 +120,6 @@ ax.set_ylabel('Additional reduction time [s]', fontsize=10)
 ax.tick_params(axis='y', labelsize=10)
 ax.tick_params(axis='x', labelsize=10)
 plt.tight_layout()
-savefig('reduction_runtime_mean.png', dpi=300, format='png')
+savefig('reduction_runtime_mean.png', dpi=600, format='png')
 
 plt.show()

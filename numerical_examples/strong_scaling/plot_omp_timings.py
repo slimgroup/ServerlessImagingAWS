@@ -75,13 +75,13 @@ timings_ec2 = []
 timings_optimum = []
 
 for filename in file_timings_default:
-    timings_default.append(np.load(path_default + filename))
+    timings_default.append(np.load(path_default + filename, allow_pickle=True))
 for filename in file_timings_no_ht:
-    timings_no_ht.append(np.load(path_no_ht + filename))
+    timings_no_ht.append(np.load(path_no_ht + filename, allow_pickle=True))
 for filename in file_timings_ec2:
-    timings_ec2.append(np.load(path_ec2 + filename))
+    timings_ec2.append(np.load(path_ec2 + filename, allow_pickle=True))
 for filename in file_timings_optimum:
-    timings_optimum.append(np.load(path_optimum + filename))
+    timings_optimum.append(np.load(path_optimum + filename, allow_pickle=True))
 
 # Timings
 # create=0; start=1; end=2; var=3;
@@ -194,7 +194,7 @@ ax.tick_params(axis='y', labelsize=10)
 ax.tick_params(axis='x', labelsize=10)
 plt.legend(['Batch default', 'Batch no HT', 'EC2 metal', 'Optimum'], loc='lower left', fontsize=9)
 plt.tight_layout()
-savefig('strong_scaling_omp_speedup.png', dpi=300, format='png')
+savefig('strong_scaling_omp_speedup.png', dpi=600, format='png')
 
 # Kernel runtimes
 fig, ax = plt.subplots(figsize=(3.33, 3))
@@ -215,6 +215,6 @@ plt.xticks(np.array([1,2,4,8,10,16,24]), ('1', '2', '4', '8', '10', '16', '24'),
 plt.yticks(np.array([250, 500, 1000, 2000]), ('250', '500', '1000', '2000'), size=10)
 plt.legend(['Batch default', 'Batch no HT', 'EC2 metal', 'Optimum'], loc='upper right', fontsize=9)
 plt.tight_layout()
-savefig('strong_scaling_omp_times.png', dpi=300, format='png')
+savefig('strong_scaling_omp_times.png', dpi=600, format='png')
 
 plt.show()

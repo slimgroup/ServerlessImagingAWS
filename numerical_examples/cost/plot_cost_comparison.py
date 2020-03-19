@@ -15,7 +15,7 @@ import matplotlib.ticker as mtick
 print("Found ", len(file_timings), " file(s).")
 timings = []
 for filename in file_timings:
-    timings.append(np.load(filename))
+    timings.append(np.load(filename, allow_pickle=True))
 T = timings[0]
 array_size = T.shape[0]
 
@@ -34,7 +34,7 @@ xlabel('Job ID', fontsize=10)
 ylabel('Runtime per gradient [s]', fontsize=10)
 
 tight_layout()
-savefig('figure_1a.png', dpi=300, format='png')
+savefig('figure_11a.png', dpi=600, format='png')
 
 ####################################################################################################
 
@@ -97,7 +97,7 @@ ax2.tick_params(axis='y', labelsize=10)
 legend(['EC2 cluster', 'AWS Batch'], fontsize=9)
 ax1.set_xlim([1, array_size])
 fig.tight_layout()  # otherwise the right y-label is slightly clipped
-savefig('figure_1b.png', dpi=300, format='png')
+savefig('figure_11b.png', dpi=600, format='png')
 
 
 # Plot runtime as function of the number of cluster nodes
@@ -109,6 +109,5 @@ ax.set_xlim([1, array_size])
 xlabel('No. of instances', fontsize=10)
 ylabel('Time-to-solution [s]', fontsize=10)
 tight_layout()
-savefig('figure_1c.png', dpi=300, format='png')
-
+savefig('figure_11c.png', dpi=600, format='png')
 show()

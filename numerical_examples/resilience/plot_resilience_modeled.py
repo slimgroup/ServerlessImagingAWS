@@ -67,15 +67,15 @@ def model_runtimes(container_times, schedule, restart=True, restart_time=120):
 ####################################################################################################
 
 # Model resilience for saving in memory or w/ opt. checkpointing
-case = 'memory'
-#case = 'checkpointing'
+#case = 'memory'
+case = 'checkpointing'
 
 # Load timings w/o interruptions
 path = os.getcwd()
 if case == 'memory':
-    T = np.load(path + '/timings_memory.dat')
+    T = np.load(path + '/timings_memory.dat', allow_pickle=True)
 else:
-    T = np.load(path + '/timings_checkpointing.dat')
+    T = np.load(path + '/timings_checkpointing.dat', allow_pickle=True)
 batchsize = T.shape[0]
 
 container_times = (T[:,2] - T[:,1])/1e3
@@ -129,6 +129,6 @@ plt.legend(['w/ instance restart', 'w/o instance restart'], fontsize=8)
 plt.tight_layout()
 
 if case == 'memory':
-    savefig('resilience_save_in_memory.png', dpi=300, format='png')
+    savefig('figure_12a.png', dpi=600, format='png')
 else:
-    savefig('resilience_save_in_checkpointing_2.png', dpi=300, format='png')
+    savefig('figure_12b.png', dpi=600, format='png')
