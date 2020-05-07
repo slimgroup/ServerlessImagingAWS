@@ -45,7 +45,7 @@ The following service roles are required for the workflow:
 
 1. `AWSBatchServiceRole`
 
-Check if the role exists in your AWS console under *IAM* -> *Roles*. If not, open a terminal in the current directory (`~/aws_workflow`) and run the following commands:
+Check if the role exists in your AWS console under *IAM* -> *Roles*. If not, open a terminal in the current directory (`~/ServerlessImagingAWS`) and run the following commands:
 
 ```
 # Create role

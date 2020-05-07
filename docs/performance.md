@@ -113,8 +113,8 @@ On the instance, install git, clone the software repository and install all requ
 ```
 sudo apt-get update
 sudo apt-get install git-core
-git clone https://github.gatech.edu/pwitte3/aws_workflow
-cd aws_workflow/numerical_examples/strong_scaling
+git clone https://github.com/slimgroup/ServerlessImagingAWS
+cd ServerlessImagingAWS/numerical_examples/strong_scaling
 ./setup.sh
 ```
 
