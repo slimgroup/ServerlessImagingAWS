@@ -1,6 +1,7 @@
 ## An event-driven approach to serverless seismic imaging in the cloud
 
 [![](https://img.shields.io/badge/docs-stable-blue.svg)](https://slimgroup.github.io/ServerlessImagingAWS/) 
+[![DOI](https://zenodo.org/badge/245444172.svg)](https://zenodo.org/badge/latestdoi/245444172)
 
 This repository contains scripts and instructions to implement the AWS seismic imaging workflow described in "An event-driven approach to serverless seismic imaging in the cloud". The workflow consists of a serverless algorithm implementation using AWS Step Functions and an event-driven map-reduce implementation for computing gradients of objective functions.
 
