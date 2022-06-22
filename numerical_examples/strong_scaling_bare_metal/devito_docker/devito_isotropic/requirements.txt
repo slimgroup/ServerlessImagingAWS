@@ -16,7 +16,7 @@ multidict==4.5.2
 frozendict==1.2
 anytree==2.6.0
 pyrevolve==1.0.2
-distributed==1.26.1
+distributed==2021.10.0
 mpi4py==3.0.1
 six==1.11.0
 appdirs==1.4.3
