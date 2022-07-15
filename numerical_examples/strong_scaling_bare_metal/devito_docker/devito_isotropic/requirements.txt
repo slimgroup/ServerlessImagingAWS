@@ -10,7 +10,7 @@ psutil==5.6.6
 py-cpuinfo==5.0.0
 scikit-image==0.15.0
 click==7.0
-codecov==2.0.15
+codecov==2.0.16
 pytest-cov==2.6.1
 multidict==4.5.2
 frozendict==1.2
